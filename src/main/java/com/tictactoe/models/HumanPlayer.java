@@ -2,10 +2,13 @@ package com.tictactoe.models;
 
 import java.util.Scanner;
 
-public class HumanPlayer extends Player{
+public class HumanPlayer extends Player {
+
+    private boolean undoUsed;
 
     public HumanPlayer(char symbol, String name) {
         super(symbol, name);
+        this.undoUsed = false;
     }
 
     @Override
@@ -16,10 +19,15 @@ public class HumanPlayer extends Player{
         int x = scanner.nextInt();
         System.out.println("Enter y:");
         int y = scanner.nextInt();
-        return new Pair<>(x,y);
+        return new Pair<>(x, y);
     }
 
-    void undo(){
+    public boolean canUndo() {
+        return !undoUsed;
+    }
 
+    public void useUndo() {
+        undoUsed = true;
     }
 }
+

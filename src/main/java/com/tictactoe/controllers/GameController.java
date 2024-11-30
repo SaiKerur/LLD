@@ -16,19 +16,30 @@ public class GameController {
         return game;
     }
 
-    public GameStatus getGameStatus(Game game){
+    public GameStatus getGameStatus(Game game) {
         return game.getGameStatus();
     }
 
-    public void printBoard(Game game){
+    public void printBoard(Game game) {
         game.printBoard();
     }
 
-    public void makeMove(Game game){
+    public void makeMove(Game game) {
         game.makeMove();
     }
 
-    public Player getWinner(Game game){
+    public boolean undoMove(Game game) {
+        if (!game.undoLastMove()) {
+            System.out.println("Undo operation failed.");
+        }
+        return true;
+    }
+
+    public void replayGame(Game game) {
+        game.replayGame();
+    }
+
+    public Player getWinner(Game game) {
         return game.getWinner();
     }
 }

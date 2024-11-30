@@ -53,19 +53,24 @@ public class Game {
         // Check if the player has won
         if (playerWonStrategy.checkIfWon(this.board.getCell(pair.getKey(), pair.getValue()))) {
             this.gameStatus = GameStatus.WON;
+            System.out.println(player.getName() + " with symbol: " + player.getSymbol() + " has won the game!");
+            System.out.println("Winning Board:");
+            this.printBoard(); // Print the winning board
             return;
         }
 
         // Check if the game is a draw (after confirming no winning condition is met)
         if (moves.size() == (board.getGrid().size() * board.getGrid().size())) {
             this.gameStatus = GameStatus.DRAW;
+            System.out.println("The game is a draw.");
+            System.out.println("Final Board:");
+            this.printBoard(); // Print the final board
             return;
         }
 
         // Switch to the next player
         this.currentPlayerIdx = (this.currentPlayerIdx + 1) % this.players.size();
     }
-
 
     public boolean undoLastMove() {
         if (lastMove == null || !(lastMove.getPlayer() instanceof HumanPlayer)) {
@@ -90,8 +95,16 @@ public class Game {
         // Update winning strategy's state
         playerWonStrategy = new OrderOneWinningStrategy(board.getGrid().size());
 
-        // Reset game state to IN_PROGRESS
+        // Reset game state to IN_PROGRESS and check winning condition
         this.gameStatus = GameStatus.IN_PROGRESS;
+
+        for (Move move : moves) {
+            if (playerWonStrategy.checkIfWon(move.getCell())) {
+                this.gameStatus = GameStatus.WON;
+                System.out.println(move.getPlayer().getName() + " with symbol: " + move.getPlayer().getSymbol() + " has won the game!");
+                return true;
+            }
+        }
 
         // Allow the human player to undo only once
         humanPlayer.useUndo();
@@ -109,6 +122,23 @@ public class Game {
             replayBoard.setPlayer(move.getCell().getX(), move.getCell().getY(), move.getPlayer());
             replayBoard.printBoard();
             System.out.println();
+        }
+
+        // Check for a winning condition after replay
+        for (Move move : moves) {
+            if (playerWonStrategy.checkIfWon(move.getCell())) {
+                this.gameStatus = GameStatus.WON;
+                System.out.println(move.getPlayer().getName() + " with symbol: " + move.getPlayer().getSymbol() + " has won the game!");
+                return;
+            }
+        }
+
+        // If no winner, ensure the game status reflects the current state
+        if (moves.size() == (board.getGrid().size() * board.getGrid().size())) {
+            this.gameStatus = GameStatus.DRAW;
+            System.out.println("The game is a draw.");
+        } else {
+            this.gameStatus = GameStatus.IN_PROGRESS;
         }
     }
 

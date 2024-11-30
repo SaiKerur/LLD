@@ -58,7 +58,7 @@ public class TicTacToe {
                 // Human player's turn
                 boolean turnComplete = false;
 
-                while (!turnComplete) {
+                while (!turnComplete && game.getGameStatus() == GameStatus.IN_PROGRESS) {
                     System.out.println("Options: 1. Make Move 2. Undo Last Move 3. Replay Game 4. Quit");
                     int choice = scanner.nextInt();
 
@@ -105,13 +105,16 @@ public class TicTacToe {
             }
         }
 
-        // Game result
+        // After the loop, check if the game has ended
         if (gameController.getGameStatus(game) == GameStatus.WON) {
             Player winner = gameController.getWinner(game);
-            System.out.println(winner.getName() + " with symbol: " + winner.getSymbol() + " has won");
-        } else {
-            System.out.println("Game is a draw");
+            System.out.println(winner.getName() + " with symbol: " + winner.getSymbol() + " has won the game!");
+            System.out.println("Final Board:");
+            gameController.printBoard(game);
+        } else if (gameController.getGameStatus(game) == GameStatus.DRAW) {
+            System.out.println("The game is a draw.");
+            System.out.println("Final Board:");
+            gameController.printBoard(game);
         }
-        gameController.printBoard(game);
     }
 }
